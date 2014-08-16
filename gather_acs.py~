@@ -38,8 +38,6 @@ COORDS_FILENAMES = [
   'tract_coords_2010.txt'
 ]
 
-RESULTS = open('SF_2010_ACS.csv','a')
-
 ## Possible variables
 ## B11001.  Household Type (including Living Alone)
 ## B19001.  Household Income
@@ -61,11 +59,7 @@ RESULTS = open('SF_2010_ACS.csv','a')
 ## B25085.  PRICE ASKED
 
 WANTED_CODES = [
-  ['Total Population', 'B01003_001E'],
-  ['White Alone', 'B02001_002E'],
-  ['Black or African American alone', 'B02001_003E'],
-  ['Asian alone', 'B02001_005E'],
-  ['Family Households', 'B11001_002E'],
+	['Family Households', 'B11001_002E'],
   ['Nonfamily Households', 'B11001_007E'],
   ['Household income: < 10k', 'B19001_002E'],
   ['Household income: 10-15k', 'B19001_003E'],
@@ -129,7 +123,6 @@ for code_info in WANTED_CODES:
   label = code_info[0]
   headers.append(label)
 print ','.join(headers)
-RESULTS.write(','.join(headers) + '\n')
 
 for msa_name, counties_for_msa in WANTED_MSAS.items():
   sys.stderr.write("Working on %s\n" % msa_name)
@@ -168,11 +161,11 @@ for msa_name, counties_for_msa in WANTED_MSAS.items():
 
     for geo_id, tract_statistics in statistics_by_tract.items():
       msa_name = tract_statistics['msa_name']
-      #if geo_id in coords_by_geoid:
-      #  lat, lon = coords_by_geoid[geo_id]
-      #else:
-      lat = ''
-      lon = ''
+      if geo_id in coords_by_geoid:
+        lat, lon = coords_by_geoid[geo_id]
+      else:
+        lat = ''
+        lon = ''
       values = [msa_name, geo_id, str(lat), str(lon)]
       for code_info in WANTED_CODES:
         label = code_info[0]
@@ -186,6 +179,4 @@ for msa_name, counties_for_msa in WANTED_MSAS.items():
         values.append(value)
       
       print ','.join(map( lambda x: '' if not x else x, values )) 
-      RESULTS.write(','.join(map( lambda x: '' if not x else x, values )) + '\n') 
 
-RESULTS.close()
