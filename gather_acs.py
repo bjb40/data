@@ -16,9 +16,12 @@
 # with much code borrowed from Pete Warden <pete@petewarden.com> 
 # Released under the MIT License
 
+import os
+import csv
 import sys, time
 from us import states
 from census import Census 
+
 
 CENSUS_API_KEY="0108a125f5c746e49dfd2fac2af43b5339e0c16b"
 
@@ -129,7 +132,8 @@ for code_info in WANTED_CODES:
   label = code_info[0]
   headers.append(label)
 print ','.join(headers)
-RESULTS.write(','.join(headers) + '\n')
+writer = csv.writer(RESULTS)
+writer.writerow(','.join(headers))
 
 for msa_name, counties_for_msa in WANTED_MSAS.items():
   sys.stderr.write("Working on %s\n" % msa_name)
@@ -186,6 +190,6 @@ for msa_name, counties_for_msa in WANTED_MSAS.items():
         values.append(value)
       
       print ','.join(map( lambda x: '' if not x else x, values )) 
-      RESULTS.write(','.join(map( lambda x: '' if not x else x, values )) + '\n') 
+      writer.writerow(','.join(map( lambda x: '' if not x else x, values ))) 
 
 RESULTS.close()
